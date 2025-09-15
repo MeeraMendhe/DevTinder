@@ -1,34 +1,24 @@
 const express=require("express");
 
 const app=express()
+const {adminAuth, userAuth}=require("./Middleware/auth")
 
+app.use("/admin",adminAuth)
 
-
-app.get("/user",(req,res,next)=>{
-    console.log("1st handler")
-    // res.send("1st response");
-    next()
-},(req,res)=>{
-    console.log("2nd handler")
-    res.send("2nd response");
-
+app.get("/admin/getData",(req,res,next)=>{
+    res.send("User Data")
 })
-app.get("/test",[(req,res,next)=>{
-    console.log("1st handler")
-    // res.send("1st response");
-    next()
-},(req,res,next)=>{
-    console.log("2nd handler")
-    // res.send("2nd response");
-    next()
-},(req,res,next)=>{
-    console.log("3rd handler")
-    // res.send("3rd response");
-    next()
-}],(req,res,next)=>{
-    console.log("4th handler")
-    res.send("4th response");
-    next()
+
+app.post("/admin/postData",(req,res,next)=>{
+    res.send("post Data")
+})
+
+app.get("/user/getData",userAuth,(req,res)=>{
+    res.send("Get user Data")
+})
+
+app.post("/user/login",(req,res)=>{
+    res.send("User login successfully!!!")
 })
 // app.use((req,res)=>{
 //     res.send("Listen to 3000 on server")
