@@ -39,6 +39,30 @@ app.get("/feed",async(req,res)=>{
 })
 
 
+//update user Data
+app.patch("/user",async(req,res)=>{
+    try{
+      let _id="68d205c0e8d28c7c73184d7c";
+      let val=await User.findByIdAndUpdate(_id,req.body)
+      console.log(val)
+      res.send("User is updated")
+    }catch(e){
+         res.send("Something went wrong",e)
+    }
+})
+
+
+//delete user 
+app.delete("/user", async(req,res)=>{
+    try{
+        let _id="68d208ed88e873e9aea416b9"
+        await User.findByIdAndDelete(_id);
+        res.send("User is deleted successfully")
+    }
+    catch(e){
+ res.send("Something went wrong",e)
+    }
+})
 connectDb().then(()=>{
     console.log("database is connected to mongodb")
     app.listen(3000,()=>{
