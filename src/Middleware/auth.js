@@ -1,3 +1,7 @@
+const jwt=require("jsonwebtoken");
+const User = require("../Model/User");
+
+
 const adminAuth=(req,res,next)=>{
     let token="12345";
     let authToken="12345";
@@ -10,16 +14,17 @@ const adminAuth=(req,res,next)=>{
     }
 }
 
-const userAuth=(req,res,next)=>{
-    let token="xyz";
-    let authToken="xyz";
-    if(token!==authToken)
+const userAuth=async(req,res,next)=>{
+    let cookies=req.cookies
+    const decoded = jwt.verify(cookies.token, "DEVTinder@2710%MM");
+    const user=await User.findById(decoded._id);
+    if(!user)
     {
-        res.status(401).send("Admin is not autharized");
-    }else
-    {
-        next()
+        throw new Error("User is not found!!!!!")
     }
+    
+    req.user=user;
+    next()
 }
 
 module.exports={adminAuth,userAuth}
