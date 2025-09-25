@@ -1,10 +1,16 @@
 const express = require("express");
 const { connectDb } = require("./config/database");
 const User = require("./Model/User");
-const app = express();
 const bcrypt=require("bcrypt")
+const cookiesParser=require("cookie-parser")
+const jwt = require('jsonwebtoken');
+
+const app = express();
+
+
 
 app.use(express.json());
+app.use(cookiesParser())
 
 app.post("/signup", async (req, res) => {
   let obj = req.body;
@@ -90,6 +96,8 @@ app.post("/login", async (req, res)=>{
         console.log("---------",user)
         if(isPasswordValid)
         {
+            const token=await jwt.sign({ _id: user._id }, "DEVTinder@2710%MM");
+            res.cookie("token", token)
             res.send("User Login successfully")
         }
         else
@@ -99,6 +107,19 @@ app.post("/login", async (req, res)=>{
     }
     catch(e){
         res.send("Something went wrong ---"+e.message)
+    }
+})
+
+//profile page for user to get info
+app.get("/profile", async(req, res)=>{
+    try{
+        let cookies=req.cookies
+        const decoded = await jwt.verify(cookies.token, 'DEVTinder@2710%MM');
+        const userInfo= await User.findById(decoded._id)
+        res.send(userInfo)
+    }
+    catch(e){
+         res.send("Something went wrong ---"+e.message)
     }
 })
 connectDb()
