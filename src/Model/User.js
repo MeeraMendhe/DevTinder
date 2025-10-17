@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const { type } = require("os");
 const { Schema, model } = mongoose;
 const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new Schema(
   {
@@ -64,6 +65,18 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+userSchema.methods.getJWT=async function(){
+ const user=this;
+ const token=await jwt.sign({ _id: user._id }, "DEVTinder@2710%MM",{ expiresIn: "1h" });//token will expires in 1hr
+ return token
+}
+
+userSchema.methods.bcryptPassword=async function(password){
+  const user=this;
+  const isPasswordValid=await bcrypt.compare(password, user.password);
+  return isPasswordValid
+}
 
 const User = model("User", userSchema);
 
