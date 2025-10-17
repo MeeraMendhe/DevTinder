@@ -1,5 +1,4 @@
 const validator = require("validator");
-const { default: isEmail } = require("validator/lib/isEmail");
 
 const signInValidation = (req) => {
   const { firstName, lastName, email } = req;
@@ -12,4 +11,10 @@ const signInValidation = (req) => {
   }
 };
 
-module.exports = { signInValidation };
+const allowedEditFields=(data)=>{
+    let allowedKeys = ["location", "phone"];
+    const isAllowed = Object.keys(data).every((k) => allowedKeys.includes(k));
+    return isAllowed
+}
+
+module.exports = { signInValidation , allowedEditFields};
